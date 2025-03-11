@@ -1,24 +1,30 @@
 import React from "react";
 import Button from "./Button";
 
-function ButtonPanel({ handleClick, calculate, clearDisplay }) {
+function ButtonPanel({ handleClick, calculate, handleOperator, handleBackspaceOrClear, handleSquareRoot, updateBackspaceButton }) {
   const buttons = [
-    "7", "8", "9", "/",
-    "4", "5", "6", "*",
-    "1", "2", "3", "-",
-    "0", ".", "=", "+"
+    ["7", "8", "9", "/"],
+    ["4", "5", "6", "*"],
+    ["1", "2", "3", "-"],
+    ["0", ".", "√", "+"],
+    [updateBackspaceButton(), "="] // AC turns into Backspace (←) when needed
   ];
 
   return (
     <div className="button-panel">
-      {buttons.map((btn, index) => (
+      {buttons.flat().map((btn, index) => (
         <Button
           key={index}
           label={btn}
-          onClick={btn === "=" ? calculate : btn === "C" ? clearDisplay : handleClick}
+          onClick={
+            btn === "←" || btn === "AC" ? handleBackspaceOrClear :
+            btn === "=" ? calculate :
+            btn === "√" ? handleSquareRoot :
+            ["+", "-", "*", "/"].includes(btn) ? () => handleOperator(btn) :
+            handleClick
+          }
         />
       ))}
-      <Button label="C" onClick={clearDisplay} />
     </div>
   );
 }
